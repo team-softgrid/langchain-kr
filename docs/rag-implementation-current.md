@@ -1,5 +1,9 @@
 # RAG 구현 문서 (현재 구현 기준)
 
+> **문서 버전**: v2.0  
+> **최종 수정일**: 2026-04-14  
+> **상태**: PoC/프로토타입 (프로덕션 전환 필요 — [web-migration-local-llm-plan.md](web-migration-local-llm-plan.md) 참조)
+
 ## 1. 개요
 이 문서는 현재 프로젝트에 구현된 전기차 충전기 AS RAG 프로토타입의 구조와 동작 방식을 정리합니다.  
 범위는 `scripts/csdata_as_bot` 기준입니다.
@@ -72,8 +76,23 @@
 - reranker 및 confidence score 미구현
 - 답변 포맷의 완전한 구조화(JSON schema) 미적용
 
-## 8. 현재 상태 요약
+## 8. 프로토타입 → 프로덕션 Gap 요약
+| 레이어 | 현재 (PoC) | 프로덕션 목표 | Gap |
+|--------|-----------|-------------|:---:|
+| UI | Streamlit | Next.js | 🔴 |
+| Backend | Streamlit 내장 | FastAPI | 🔴 |
+| Vector DB | Chroma (로컬 파일) | pgvector/OpenSearch | 🔴 |
+| LLM | OpenAI gpt-4o-mini | Ollama qwen2.5:14b | ⚠️ |
+| Embedding | text-embedding-3-small | bge-m3 (로컬) | ⚠️ |
+| 검색 방식 | Dense only | Hybrid (Dense+BM25) | ⚠️ |
+| Reranker | 없음 | bge-reranker-v2-m3 | 🔴 |
+| 신뢰도 | 없음 | Confidence Score | 🔴 |
+| 인증/권한 | 없음 | RBAC | 🔴 |
+| 멀티테넌트 | 없음 | 테넌트별 분리 | 🔴 |
+
+## 9. 현재 상태 요약
 - AS 이력 기반 RAG 파이프라인과 데모 UI는 동작 확인 완료
 - 인덱스 생성 및 검색/응답 흐름 정상
 - 다음 단계는 정확도 개선(정규화/하이브리드 검색/rerank/신뢰도/템플릿 강제)
+- 프로덕션 전환은 [web-migration-local-llm-plan.md](web-migration-local-llm-plan.md) 참조
 
