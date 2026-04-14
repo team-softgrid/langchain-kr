@@ -17,6 +17,7 @@
 ## RAG 기술 문서
 - `rag-implementation-current.md`: 현재 RAG 구현 구조/동작/한계
 - `rag-improvement-design.md`: 정확도 개선 5개 축 설계 + 하이브리드/로컬 LLM 전환안
+- `web-migration-local-llm-plan.md`: 웹 서비스 전환 상세 계획 + 로컬 LLM 모델 선정
 
 ## 권장 활용 순서
 1. `as-ai-master-plan.md`로 전체 방향 정렬
