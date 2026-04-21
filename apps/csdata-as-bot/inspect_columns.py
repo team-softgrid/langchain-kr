@@ -6,7 +6,9 @@ from pathlib import Path
 
 import pandas as pd
 
-ROOT = Path(__file__).resolve().parents[2]
+from paths import repo_root
+
+ROOT = repo_root()
 CS = ROOT / "csData"
 OUT = Path(__file__).resolve().parent / "column_report.txt"
 

@@ -17,8 +17,9 @@ from typing import Any
 import pandas as pd
 
 from normalizer import error_code_norm_field, normalize_symptom_text
+from paths import repo_root
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = repo_root()
 CS_DIR = ROOT / "csData"
 OUT_JSONL = Path(__file__).resolve().parent / "as_records.jsonl"
 
