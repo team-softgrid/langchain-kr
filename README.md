@@ -161,16 +161,16 @@ poetry install
 # 3) 환경변수 파일 생성(.env) 후 OPENAI_API_KEY 설정
 # 예: OPENAI_API_KEY=sk-...
 
-# 4) 기본 템플릿 앱 실행(가장 빠른 확인 경로)
-poetry run streamlit run 19-Streamlit/00-Chat-Template/main.py
+# 4) 학습용 템플릿 앱 실행(튜토리얼)
+poetry run streamlit run tutorials/19-Streamlit/00-Chat-Template/main.py
 
 # 5) csData AS 봇 실행(인덱스가 없는 경우)
-poetry run python apps/csdata-as-bot/ingest.py
-poetry run python apps/csdata-as-bot/build_index.py
-poetry run streamlit run apps/csdata-as-bot/streamlit_app.py
+poetry run python csdata-as-bot/ingest.py
+poetry run python csdata-as-bot/build_index.py
+poetry run streamlit run csdata-as-bot/streamlit_app.py
 ```
 
-문제가 생기면 `apps/csdata-as-bot/streamlit_app.py` 상단 실행 주석의 안내를 먼저 확인하세요.
+문제가 생기면 `csdata-as-bot/streamlit_app.py` 상단 실행 주석의 안내를 먼저 확인하세요.
 
 ## Start History
 

@@ -16,15 +16,15 @@ langchain-kr/
     01-Basic/
     04-Model/
     ...
-  apps/                       # 실행형 앱
-    streamlit/
-      chat-template/
-      rag-eval/
-    csdata-as-bot/            # (현재) ingest/build_index/streamlit_app 등 파이프라인 코드
+  csdata-as-bot/              # 실행형 앱(메인 제품 코드)
+    ingest.py
+    build_index.py
+    streamlit_app.py
+    retrieval.py
   data/                       # 로컬 데이터(기본 gitignore)
     raw/
     processed/
-  scripts/                    # 공용 유틸/운영 스크립트(필요 시만 유지)
+  tutorials/                  # 학습용 튜토리얼 자산(01~99)
   docs/
     onboarding.md
     architecture.md
@@ -35,18 +35,15 @@ langchain-kr/
 
 ### 1단계 (즉시)
 
-- 현재 경로는 유지하고, 문서/가이드로 경계만 먼저 명확화
-- `README.md`에 빠른 실행 경로를 2개로 고정
-  - 튜토리얼 실행 경로
-  - `csdata_as_bot` 실행 경로
-- `.gitignore`로 데이터/인덱스 산출물 커밋 방지
+- **완료:** 학습용 폴더를 `tutorials/` 아래로 이동해 서비스 코드와 물리 분리
+- **완료:** 제품 코드 `csdata-as-bot/`를 루트로 승격
+- **완료:** `.gitignore`로 데이터/인덱스 산출물 커밋 방지
 
 ### 2단계 (점진)
 
-- **완료:** `scripts/csdata_as_bot` → `apps/csdata-as-bot` 이동
-- **완료:** `ingest.py`, `build_index.py`, `streamlit_app.py` 실행 커맨드 및 `.env` 로딩 경로 갱신
+- **완료:** `README.md` 실행 경로를 `tutorials/` 및 `csdata-as-bot/` 기준으로 정리
 - (선택) `csdata-as-bot` 내부를 `app/`·`pipeline/`로 더 쪼개기
-- 노트북은 현행 숫자 폴더를 유지하되, 상위 `tutorials/` 아래로 모으는 리팩터링 검토
+- (선택) Streamlit UI를 API 서버 + 웹 프론트 구조로 분리
 
 ### 3단계 (안정화)
 

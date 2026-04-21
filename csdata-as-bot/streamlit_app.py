@@ -3,12 +3,12 @@
 
 실행:
   cd 프로젝트 루트
-  poetry run streamlit run apps/csdata-as-bot/streamlit_app.py
+  poetry run streamlit run csdata-as-bot/streamlit_app.py
   (앱이 프로젝트 루트의 .env 에서 OPENAI_API_KEY 를 읽습니다.)
 
 사전:
-  poetry run python apps/csdata-as-bot/ingest.py
-  poetry run python apps/csdata-as-bot/build_index.py
+  poetry run python csdata-as-bot/ingest.py
+  poetry run python csdata-as-bot/build_index.py
 
 의존성: langchain-openai 0.3.14+ 는 langchain-core >= 0.3.58 과 맞춰야 합니다.
   (ImportError: convert_to_openai_data_block … 발생 시)
@@ -103,14 +103,14 @@ def main() -> None:
                 "`chroma_db` / `chroma_db_*` 폴더는 있으나 **BM25용 `sparse_index.pkl`이 없습니다** "
                 "(구버전 인덱스이거나 빌드가 끝나지 않았습니다).\n\n"
                 "프로젝트 루트에서:\n"
-                "`poetry run python apps/csdata-as-bot/build_index.py`\n\n"
+                "`poetry run python csdata-as-bot/build_index.py`\n\n"
                 f"(갱신 필요 폴더 예: {', '.join(sorted(stale)[:5])}{'…' if len(stale) > 5 else ''})"
             )
         else:
             st.warning(
                 "인덱스가 없습니다. 프로젝트 루트에서 순서대로:\n"
-                "`poetry run python apps/csdata-as-bot/ingest.py`\n"
-                "`poetry run python apps/csdata-as-bot/build_index.py`"
+                "`poetry run python csdata-as-bot/ingest.py`\n"
+                "`poetry run python csdata-as-bot/build_index.py`"
             )
         return
 

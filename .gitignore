@@ -9,6 +9,7 @@
 *.pkl
 *.md
 !/PROJECT_STRUCTURE_PROPOSAL.md
+!/docs/*.md
 *.gguf
 *.faiss
 *.index
@@ -35,12 +36,12 @@ csData/**/*.xlsx
 csData/**/*.xls
 csData/**/*.zip
 csData/**/*.pptx
-apps/csdata-as-bot/chroma_db/
-apps/csdata-as-bot/chroma_db_*/
-apps/csdata-as-bot/as_records.jsonl
-apps/csdata-as-bot/active_chroma_dir.txt
-apps/csdata-as-bot/column_report.txt
-apps/csdata-as-bot/missing_indexed_files.txt
+csdata-as-bot/chroma_db/
+csdata-as-bot/chroma_db_*/
+csdata-as-bot/as_records.jsonl
+csdata-as-bot/active_chroma_dir.txt
+csdata-as-bot/column_report.txt
+csdata-as-bot/missing_indexed_files.txt
 
 # Accidental numeric artifact files at repository root
 /0.1.59

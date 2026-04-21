@@ -85,7 +85,7 @@ def main() -> None:
         raise SystemExit(
             f"문서가 없습니다: {JSONL}\n"
             "먼저 프로젝트 루트에 csData 엑셀이 있는지 확인한 뒤:\n"
-            "  poetry run python apps/csdata-as-bot/ingest.py"
+            "  poetry run python csdata-as-bot/ingest.py"
         )
 
     # Windows 파일 잠금 회피: 매 실행마다 새 폴더에 인덱스를 생성
