@@ -78,15 +78,23 @@ def _risk_key(v: Any) -> str:
 
 
 def _parse_ts(v: Any) -> datetime | None:
+    """ISO8601 문자열을 naive datetime 으로 파싱한다.
+
+    DB 에 저장된 ``created_at`` 이 tz-aware(UTC+09:00) 인 경우가 있어,
+    pandas 비교에서 tz 혼용으로 터지지 않도록 tzinfo 를 제거해 정규화한다.
+    """
     if not v:
         return None
     try:
-        return datetime.fromisoformat(str(v))
+        dt = datetime.fromisoformat(str(v))
     except ValueError:
         try:
-            return datetime.strptime(str(v)[:19], "%Y-%m-%dT%H:%M:%S")
+            dt = datetime.strptime(str(v)[:19], "%Y-%m-%dT%H:%M:%S")
         except ValueError:
             return None
+    if dt.tzinfo is not None:
+        dt = dt.replace(tzinfo=None)
+    return dt
 
 
 def _load_frames() -> tuple[pd.DataFrame, pd.DataFrame]:
@@ -142,6 +150,11 @@ def _date_filter(df: pd.DataFrame, start: date, end: date, col: str = "created_a
         return df
     mask = df[col].notna()
     out = df[mask].copy()
+    # tz-aware 값이 남아 있으면 tz 를 떼어 네이티브로 통일
+    series = pd.to_datetime(out[col], errors="coerce")
+    if getattr(series.dt, "tz", None) is not None:
+        series = series.dt.tz_localize(None)
+    out[col] = series
     s = pd.Timestamp(start)
     e = pd.Timestamp(end) + pd.Timedelta(days=1)
     return out[(out[col] >= s) & (out[col] < e)]
@@ -186,33 +199,38 @@ def _chart_inspection_trend(ins_df: pd.DataFrame) -> None:
         .rename("count")
         .reset_index()
     )
-    chart = (
-        alt.Chart(daily)
-        .mark_area(
-            line={"color": COLOR_PRIMARY, "strokeWidth": 2},
-            color=alt.Gradient(
-                gradient="linear",
-                stops=[
-                    alt.GradientStop(color=COLOR_PRIMARY, offset=0),
-                    alt.GradientStop(color="rgba(0,242,254,0.02)", offset=1),
-                ],
-                x1=1, x2=1, y1=1, y2=0,
-            ),
-        )
-        .encode(
-            x=alt.X("date:T", title=None),
-            y=alt.Y("count:Q", title="건수"),
-            tooltip=["date:T", "count:Q"],
-        )
-        .properties(height=230)
+    base = alt.Chart(daily).encode(
+        x=alt.X("date:T", title=None),
+        y=alt.Y("count:Q", title="건수"),
+        tooltip=["date:T", "count:Q"],
     )
-    st.altair_chart(chart, use_container_width=True)
+    area = base.mark_area(
+        line={"color": COLOR_PRIMARY, "strokeWidth": 2.5},
+        color=alt.Gradient(
+            gradient="linear",
+            stops=[
+                alt.GradientStop(color=COLOR_PRIMARY, offset=0),
+                alt.GradientStop(color="rgba(0,242,254,0.02)", offset=1),
+            ],
+            x1=1, x2=1, y1=1, y2=0,
+        ),
+        interpolate="monotone",
+    )
+    points = base.mark_circle(color=COLOR_PRIMARY, size=90, stroke="#ffffff", strokeWidth=2)
+    st.altair_chart((area + points).properties(height=230), use_container_width=True)
 
 
 def _bar(df: pd.DataFrame, x_field: str, color: str, height: int = 240) -> alt.Chart:
     return (
         alt.Chart(df)
-        .mark_bar(cornerRadiusTopLeft=6, cornerRadiusTopRight=6, color=color)
+        .mark_bar(
+            cornerRadiusTopLeft=6,
+            cornerRadiusTopRight=6,
+            color=color,
+            opacity=0.72,
+            stroke=color,
+            strokeWidth=1.5,
+        )
         .encode(
             x=alt.X(f"{x_field}:N", sort="-y", title=None),
             y=alt.Y("count:Q", title="건수"),
@@ -264,11 +282,17 @@ def _chart_risk_distribution(ins_df: pd.DataFrame) -> None:
     )
     chart = (
         alt.Chart(df)
-        .mark_bar(cornerRadiusTopLeft=6, cornerRadiusTopRight=6)
+        .mark_bar(
+            cornerRadiusTopLeft=6,
+            cornerRadiusTopRight=6,
+            opacity=0.78,
+            strokeWidth=1.5,
+        )
         .encode(
             x=alt.X("level:N", sort=order, title=None),
             y=alt.Y("count:Q", title="건수"),
             color=alt.Color("level:N", scale=color_map, legend=None),
+            stroke=alt.Color("level:N", scale=color_map, legend=None),
             tooltip=["level:N", "count:Q"],
         )
         .properties(height=200)
@@ -295,7 +319,14 @@ def _chart_top_chargers(ins_df: pd.DataFrame) -> None:
         return
     chart = (
         alt.Chart(s)
-        .mark_bar(cornerRadiusTopLeft=6, cornerRadiusTopRight=6, color=COLOR_PRIMARY)
+        .mark_bar(
+            cornerRadiusTopLeft=6,
+            cornerRadiusTopRight=6,
+            color=COLOR_PRIMARY,
+            opacity=0.72,
+            stroke=COLOR_PRIMARY,
+            strokeWidth=1.5,
+        )
         .encode(
             y=alt.Y("charger_id:N", sort="-x", title=None),
             x=alt.X("count:Q", title="점검 횟수"),

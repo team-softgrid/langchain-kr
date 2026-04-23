@@ -22,8 +22,9 @@ COLOR_SECONDARY = "#4facfe"  # 스카이 블루
 COLOR_ACCENT = "#f093fb"     # 핑크 (하이라이트)
 COLOR_BG = "#0b0e14"
 COLOR_BG_SOFT = "#11151f"
-COLOR_TEXT = "#e0e0e0"
-COLOR_MUTED = "#a0a0a0"
+COLOR_TEXT = "#ECEFF5"
+COLOR_MUTED = "#B4BBCB"
+COLOR_MUTED_SOFT = "#8A93A8"
 COLOR_SUCCESS = "#10b981"
 COLOR_WARN = "#f59e0b"
 COLOR_DANGER = "#ef4444"
@@ -31,11 +32,8 @@ GLASS_BG = "rgba(255,255,255,0.05)"
 GLASS_BORDER = "rgba(255,255,255,0.10)"
 GLASS_BORDER_STRONG = "rgba(255,255,255,0.18)"
 
-_CSS = f"""
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
-<style>
+_CSS = f"""<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Outfit:wght@400;600;700;800&display=swap');
 :root {{
   --primary: {COLOR_PRIMARY};
   --secondary: {COLOR_SECONDARY};
@@ -98,57 +96,127 @@ section[data-testid="stSidebar"] .stRadio [data-baseweb="radio"] {{
 
 /* ---------- 버튼 ---------- */
 .stButton > button, .stDownloadButton > button, .stFormSubmitButton > button {{
-  background: var(--card-bg) !important;
+  background: rgba(255,255,255,0.06) !important;
   color: var(--text) !important;
-  border: 1px solid var(--glass-border) !important;
+  border: 1px solid rgba(255,255,255,0.18) !important;
   border-radius: 10px !important;
   font-weight: 600 !important;
-  backdrop-filter: blur(8px);
   transition: all 0.2s ease;
+}}
+.stButton > button p, .stDownloadButton > button p, .stFormSubmitButton > button p {{
+  color: inherit !important;
+  margin: 0 !important;
 }}
 .stButton > button:hover, .stDownloadButton > button:hover, .stFormSubmitButton > button:hover {{
   border-color: var(--primary) !important;
   color: var(--primary) !important;
-  box-shadow: 0 0 0 1px rgba(0,242,254,0.4) inset,
-              0 10px 24px -10px rgba(0,242,254,0.35);
+  background: rgba(0,242,254,0.07) !important;
 }}
 
+/* Primary: 진한 딥블루 → 시안 그라디언트 + 어두운 텍스트 강제 */
 .stButton > button[kind="primary"], button[data-testid="baseButton-primary"],
 .stFormSubmitButton > button[kind="primary"] {{
-  background: linear-gradient(135deg, var(--secondary), var(--primary)) !important;
-  color: #00141a !important;
+  background: linear-gradient(135deg, #2260d8 0%, #3aa6f5 40%, #00d8e6 100%) !important;
+  color: #031A24 !important;
   border: none !important;
-  font-weight: 700 !important;
-  box-shadow: 0 10px 24px -8px rgba(0,242,254,0.35);
+  font-weight: 800 !important;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.15);
+  box-shadow: 0 10px 24px -8px rgba(0,170,220,0.45);
 }}
-.stButton > button[kind="primary"]:hover {{
-  transform: translateY(-2px);
-  box-shadow: 0 16px 32px -10px rgba(0,242,254,0.55);
+.stButton > button[kind="primary"] *,
+.stFormSubmitButton > button[kind="primary"] *,
+button[data-testid="baseButton-primary"] * {{
+  color: #031A24 !important;
+}}
+.stButton > button[kind="primary"]:hover,
+.stFormSubmitButton > button[kind="primary"]:hover {{
+  transform: translateY(-1px);
+  box-shadow: 0 16px 32px -10px rgba(0,170,220,0.6);
   filter: brightness(1.05);
 }}
 
-/* ---------- 입력 위젯 ---------- */
+/* ---------- 입력 위젯 라벨 ---------- */
+.stTextInput label, .stTextArea label, .stSelectbox label, .stNumberInput label,
+.stDateInput label, .stFileUploader label, .stSlider label, .stRadio label,
+.stCheckbox label, .stMultiSelect label, .stTimeInput label, .stColorPicker label {{
+  color: var(--text) !important;
+  font-weight: 600 !important;
+  font-size: 13.5px !important;
+  opacity: 1 !important;
+}}
+
+/* ---------- 입력 위젯 박스 ---------- */
 .stTextInput > div > div,
 .stTextArea textarea,
 .stSelectbox > div > div,
 .stNumberInput > div > div,
 .stDateInput > div > div,
+.stMultiSelect > div > div,
 .stFileUploader > div {{
-  background: rgba(255,255,255,0.04) !important;
-  border: 1px solid var(--glass-border) !important;
+  background: rgba(255,255,255,0.06) !important;
+  border: 1px solid rgba(255,255,255,0.22) !important;
   border-radius: 12px !important;
   color: var(--text) !important;
 }}
-.stTextInput input, .stTextArea textarea {{
+.stTextInput input, .stTextArea textarea, .stNumberInput input, .stDateInput input,
+.stMultiSelect input, .stSelectbox div[role="combobox"] {{
   color: var(--text) !important;
+  caret-color: var(--primary);
 }}
-.stTextInput input:focus, .stTextArea textarea:focus,
-.stSelectbox > div > div:focus-within,
-.stNumberInput > div > div:focus-within {{
+.stTextInput input::placeholder,
+.stTextArea textarea::placeholder,
+.stNumberInput input::placeholder,
+.stDateInput input::placeholder {{
+  color: var(--text-dim) !important;
+  opacity: 0.75 !important;
+}}
+
+/* 포커스 강조: 얇고 부드러운 시안 아웃라인만 사용 (주황 기본값 제거) */
+.stTextInput > div > div:focus-within,
+.stTextArea > div > div:focus-within,
+.stNumberInput > div > div:focus-within,
+.stDateInput > div > div:focus-within,
+.stMultiSelect > div > div:focus-within,
+.stSelectbox > div > div:focus-within {{
   border-color: var(--primary) !important;
+  box-shadow: 0 0 0 2px rgba(0,242,254,0.18) !important;
+  outline: none !important;
 }}
-.stSlider [data-baseweb="slider"] > div > div > div {{
-  background: linear-gradient(90deg, var(--secondary), var(--primary)) !important;
+
+/* NumberInput ± 증감 버튼 — 주황 기본 테마 제거 */
+.stNumberInput button {{
+  background: rgba(255,255,255,0.06) !important;
+  color: var(--text) !important;
+  border-color: rgba(255,255,255,0.18) !important;
+}}
+.stNumberInput button:hover {{
+  background: rgba(0,242,254,0.1) !important;
+  color: var(--primary) !important;
+}}
+
+/* ---------- Slider ---------- */
+/* 트랙 — 기본 회색 → 시안 그라디언트 */
+.stSlider [data-baseweb="slider"] > div:nth-child(2),
+.stSlider [data-baseweb="slider"] > div:nth-child(3) {{
+  background: linear-gradient(90deg, #2260d8, #00d8e6) !important;
+}}
+/* 썸(핸들) — 기본 분홍 → 흰 테두리 + 시안 원형 */
+.stSlider [role="slider"] {{
+  background: #ffffff !important;
+  border: 3px solid var(--primary) !important;
+  box-shadow: 0 4px 12px rgba(0,242,254,0.45) !important;
+}}
+/* 슬라이더 현재값/min·max 라벨 */
+.stSlider [data-baseweb="slider"] + div,
+.stSlider [data-testid="stTickBar"] {{
+  color: var(--text-dim) !important;
+}}
+.stSlider [data-testid="stThumbValue"] {{
+  color: var(--text) !important;
+  font-weight: 700 !important;
+  background: rgba(0,242,254,0.12) !important;
+  padding: 2px 8px !important;
+  border-radius: 8px !important;
 }}
 
 /* ---------- 메트릭 카드 (KPI 느낌) ---------- */
@@ -523,8 +591,17 @@ header[data-testid="stHeader"] {{ background: transparent !important; }}
 
 
 def inject_global_css() -> None:
-    """페이지 진입 시 한 번 호출 — 전역 CSS 주입."""
-    st.markdown(_CSS, unsafe_allow_html=True)
+    """페이지 진입 시 한 번 호출 — 전역 CSS 주입.
+
+    Streamlit 의 markdown renderer 가 `<style>` 내부 CSS 셀렉터를
+    텍스트 노드로 추가 렌더링하는 이슈가 있어 가능하면 `st.html` 로 주입한다.
+    `st.html` 이 없는 구 버전이면 markdown fallback 을 사용하되,
+    `<style>` 태그 앞뒤로 공백이 전혀 없어야 한다.
+    """
+    if hasattr(st, "html"):
+        st.html(_CSS)
+    else:
+        st.markdown(_CSS, unsafe_allow_html=True)
 
 
 def render_sidebar_brand() -> None:
